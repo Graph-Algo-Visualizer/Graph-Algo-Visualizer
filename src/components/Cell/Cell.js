@@ -1,3 +1,5 @@
+import './Cell.css'
+
 function Cell({
     cell, 
     onMouseDown,
@@ -7,16 +9,18 @@ function Cell({
 
   const {row, col, startCell, endCell, wall} = cell
   const updateClassName = endCell
-    ? 'cell-end'
+    ? '-end'
     : startCell
-    ? 'cell-start'
+    ? '-start'
     : wall
-    ? 'cell-wall'
+    ? '-wall'
     : '';
-
+  if (row === 10 && col === 15) {
+    console.log(cell, updateClassName)
+  }
   return (
     <div 
-      className={`cell ${updateClassName}`}
+      className={`cell cell${updateClassName}`}
       id={`cell-${row}-${col}`}
       onMouseDown={() => onMouseDown(row, col)}
       onMouseEnter={() => onMouseEnter(row, col)}

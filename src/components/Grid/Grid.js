@@ -1,5 +1,8 @@
 import Cell from '../Cell/Cell';
 import { useState, useRef, useEffect }from 'react';
+import {dijkstra, getNodesInShortestPathOrder} from '../../algorithms/dijkstras'
+
+import './Grid.css'
 
 function Grid() {
   // initialize grid with a default start and end node
@@ -93,32 +96,76 @@ function Grid() {
       prevCell: false,
     }
   }
+
+  const animateDijkstra = (visitedNodesInOrder, nodesInShortestPathOrder) => {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length) {
+        setTimeout(() => {
+          animateShortestPath(nodesInShortestPathOrder);
+        }, 10 * i);
+        return;
+      }
+      setTimeout(() => {
+        const node = visitedNodesInOrder[i];
+        document.getElementById(`cell-${node.row}-${node.col}`).className =
+          'cell cell-visited';
+      }, 10 * i);
+    }
+  }
+
+  const animateShortestPath = (nodesInShortestPathOrder) => {
+    for (let i = 0; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        document.getElementById(`cell-${node.row}-${node.col}`).className =
+          'cell cell-shortest-path';
+      }, 10 * i);
+    }
+  }
   
+  const dijkstrasAlgo = () => {
+    const {grid, startCell, endCell} = gridState;
+
+    const startNode = grid[startCell[0]][startCell[1]];
+    const finishNode = grid[endCell[0]][endCell[1]];
+    console.log(startNode, finishNode)
+    const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+
+    animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
 
   return (
-    <div className="grid" ref={ref}>
-      {
-        gridState.grid.map((row, rowId) => {
-          return (
-            <div key={rowId}>
-              {row.map((cell, cellId) => {
-                const {row, col} = cell
-                return (
-                  <Cell 
-                    key={cellId} 
-                    cell={cell}
-                    mouseIsPressed={gridState.mouseIsPressed}
-                    onMouseDown={(row, col) => mouseDown(row, col)}
-                    onMouseEnter={(row, col) => mouseEnter(row, col)}
-                    onMouseUp={() => mouseUp()}
-                  />
-              )})}
-            </div>
+    <div>
+      <button onClick={() => dijkstrasAlgo()}>
+        Dijkstra's Algorithm
+      </button>    
+      <div className="grid" ref={ref}>
+        {
+          gridState.grid.map((row, rowId) => {
+            return (
+              <div key={rowId}>
+                {row.map((cell, cellId) => {
+                  const {row, col} = cell
+                  return (
+                    <Cell 
+                      key={cellId} 
+                      cell={cell}
+                      mouseIsPressed={gridState.mouseIsPressed}
+                      onMouseDown={(row, col) => mouseDown(row, col)}
+                      onMouseEnter={(row, col) => mouseEnter(row, col)}
+                      onMouseUp={() => mouseUp()}
+                    />
+                )})}
+              </div>
 
-          )
-        })
-      }
+            )
+          })
+        }
+      </div>
     </div>
+
   );
 }
 
