@@ -5,18 +5,3 @@
 .Nav {
   background: rgba(146, 253, 221, 0.685)
 }
-
-.grid {
-  display: flex;
-  flex-flow: wrap;
-  height: 100vh;
-  margin: 5px
-}
-
-.cell {
-  border: .5px solid black;
-  margin: 0;
-  width: 25px;
-  height: 25px;
-  background: rgb(255, 255, 255);
-}
